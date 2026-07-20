@@ -1,30 +1,23 @@
 import express from 'express';
-import Database from 'better-sqlite3';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { init, getContacts, getTotalCount, addContact, deleteContact } from './db.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 3001;
 
 // ── Middleware ──────────────────────────────────────────────────────────────
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:4173'] }));
+app.use(cors());
 app.use(express.json());
 
-// ── SQLite Setup ────────────────────────────────────────────────────────────
-const db = new Database(path.join(__dirname, 'contacts.db'));
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS contacts (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    name      TEXT    NOT NULL,
-    email     TEXT    NOT NULL,
-    subject   TEXT    NOT NULL,
-    message   TEXT    NOT NULL,
-    received  TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
-  )
-`);
+// Ensure Database is initialized before handling any requests
+let dbInitPromise = null;
+app.use(async (req, res, next) => {
+    if (!dbInitPromise) {
+        dbInitPromise = init();
+    }
+    await dbInitPromise;
+    next();
+});
 
 // ── API Routes ──────────────────────────────────────────────────────────────
 
@@ -34,33 +27,48 @@ app.post('/api/contact', (req, res) => {
     if (!name || !email || !subject || !message) {
         return res.status(400).json({ error: 'All fields are required.' });
     }
-    const stmt = db.prepare(
-        'INSERT INTO contacts (name, email, subject, message) VALUES (?, ?, ?, ?)'
-    );
-    const info = stmt.run(name, email, subject, message);
-    res.json({ success: true, id: info.lastInsertRowid });
+    try {
+        const id = addContact(name, email, subject, message);
+        res.json({ success: true, id });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to save message.', details: error.message });
+    }
 });
 
-// GET /api/contact   → list all messages (for the viewer)
+// GET /api/contact   → list all messages as JSON
 app.get('/api/contact', (req, res) => {
-    const rows = db.prepare('SELECT * FROM contacts ORDER BY id DESC').all();
-    res.json(rows);
+    try {
+        const rows = getContacts();
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve messages.' });
+    }
 });
 
 // DELETE /api/contact/:id  → delete a message
 app.delete('/api/contact/:id', (req, res) => {
-    db.prepare('DELETE FROM contacts WHERE id = ?').run(req.params.id);
-    res.json({ success: true });
+    try {
+        deleteContact(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete message.' });
+    }
 });
 
-// ── SQLite Viewer UI ────────────────────────────────────────────────────────
-app.get('/', (req, res) => {
-    const rows = db.prepare('SELECT * FROM contacts ORDER BY id DESC').all();
-    const total = db.prepare('SELECT COUNT(*) as cnt FROM contacts').get().cnt;
+// Redirect /api to /api/viewer
+app.get('/api', (req, res) => {
+    res.redirect('/api/viewer');
+});
 
-    const rowsHtml = rows.length === 0
-        ? `<tr><td colspan="6" style="text-align:center;color:#6b7280;padding:2rem">No messages yet.</td></tr>`
-        : rows.map(r => `
+// ── Database Viewer UI ────────────────────────────────────────────────────────
+app.get('/api/viewer', (req, res) => {
+    try {
+        const rows = getContacts();
+        const total = getTotalCount();
+
+        const rowsHtml = rows.length === 0
+            ? `<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:2rem">No messages yet.</td></tr>`
+            : rows.map(r => `
       <tr>
         <td>${r.id}</td>
         <td>${esc(r.name)}</td>
@@ -73,10 +81,11 @@ app.get('/', (req, res) => {
         </td>
       </tr>`).join('');
 
-    res.send(`<!DOCTYPE html>
+        res.send(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📬 Contact Messages – Praveen Kumar K</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -117,7 +126,7 @@ app.get('/', (req, res) => {
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
       <h2 style="font-size:1.05rem;color:#e2e8f0">All Submissions</h2>
-      <a href="/" class="refresh">↻ Refresh</a>
+      <a href="/api/viewer" class="refresh">↻ Refresh</a>
     </div>
     <div class="table-wrap">
       <table>
@@ -128,7 +137,7 @@ app.get('/', (req, res) => {
       </table>
     </div>
   </div>
-  <footer>SQLite · better-sqlite3 · Express · Portfolio Backend</footer>
+  <footer>SQLite Sync · Express · Portfolio Backend</footer>
   <script>
     async function del(id) {
       if (!confirm('Delete this message?')) return;
@@ -138,6 +147,9 @@ app.get('/', (req, res) => {
   </script>
 </body>
 </html>`);
+    } catch (error) {
+        res.status(500).send(`An error occurred: ${error.message}`);
+    }
 });
 
 function esc(s) {
@@ -146,8 +158,14 @@ function esc(s) {
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-app.listen(PORT, () => {
-    console.log(`\n  ✅  Backend running  →  http://localhost:${PORT}`);
-    console.log(`  📊  SQLite Viewer   →  http://localhost:${PORT}/`);
-    console.log(`  💾  Database        →  contacts.db\n`);
-});
+// Only start the listener if running locally (not in serverless environment)
+if (!process.env.VERCEL && !process.env.NOW_BUILDER) {
+    init().then(() => {
+        app.listen(PORT, () => {
+            console.log(`\n  ✅  Backend running locally  →  http://localhost:${PORT}`);
+            console.log(`  📊  Database Viewer         →  http://localhost:${PORT}/api/viewer`);
+        });
+    });
+}
+
+export default app;
