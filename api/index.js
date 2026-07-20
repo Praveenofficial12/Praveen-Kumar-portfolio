@@ -77,7 +77,7 @@ app.get('/api/viewer', async (req, res) => {
         <td class="msg">${esc(r.message)}</td>
         <td>${r.received}</td>
         <td>
-          <button onclick="del(${r.id})" class="del-btn">🗑 Delete</button>
+          <button onclick="del('${r.id}')" class="del-btn">🗑 Delete</button>
         </td>
       </tr>`).join('');
 
@@ -137,7 +137,7 @@ app.get('/api/viewer', async (req, res) => {
       </table>
     </div>
   </div>
-  <footer>SQLite Sync · Express · Portfolio Backend</footer>
+  <footer>MongoDB Cluster · Express · Portfolio Backend</footer>
   <script>
     async function del(id) {
       if (!confirm('Delete this message?')) return;

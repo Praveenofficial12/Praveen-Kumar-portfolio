@@ -15,10 +15,9 @@ Welcome to my premium developer portfolio! This project is a next-generation, hi
 - **Unified Express Backend**: Built as a Vercel Serverless Function under `api/index.js` which performs routing, database, and admin viewer rendering.
 - **Single Domain Routing**: Configured via `vercel.json` rewrites. In production, frontend assets and backend endpoints route under the same origin domain, avoiding CORS limits and simplifying configurations.
 
-### 💾 Smart Dual-Engine Database (`db.js`)
-To align with serverless environments (like Vercel lambdas) while maintaining regular local database development:
-- **Development (SQLite)**: Connects to local persistent SQL files (`contacts.db`) utilizing the blazing-fast `better-sqlite3` wrapper.
-- **Production (JSON Fallback)**: Vercel functions run in read-only sandboxes except for the `/tmp` folder. If native C++ addons (`better-sqlite3`) face compilation mismatches or runtime failures inside Vercel, the database **automatically switches** to storing submissions as a structured JSON database in `/tmp/contacts.json`. This guarantees 100% operational uptime without lambda crashes.
+### 🍃 Cloud Database Persistence (MongoDB)
+- **MongoDB Atlas Integration**: Stores form submissions securely inside an online MongoDB Atlas cluster database using `mongoose` ODM.
+- **State Persistence**: Both local dev runs and deployed Vercel functions write to the same cluster database, ensuring a single, secure source of truth for contact information.
 
 ---
 
@@ -28,7 +27,7 @@ To align with serverless environments (like Vercel lambdas) while maintaining re
 | :--- | :--- |
 | **Frontend** | React 19, Vite 8, Tailwind CSS, React Router DOM, Framer Motion, Lucide Icons, React Icons |
 | **Backend** | Node.js, Express, CORS |
-| **Database** | SQLite (`better-sqlite3`), JSON File Engine (Automatic Fallback) |
+| **Database** | MongoDB Atlas, Mongoose |
 | **Deployment** | Vercel Serverless Functions |
 
 ---
@@ -39,7 +38,7 @@ To align with serverless environments (like Vercel lambdas) while maintaining re
 Portfolio/
 ├── api/
 │   ├── index.js      # Express Entry Point (Serverless Handler)
-│   └── db.js         # Seamless Dual-Engine Database Controller
+│   └── db.js         # Mongoose Database Connector & Model
 ├── src/
 │   ├── components/   # Modular React Components (Hero, Gallery, Contact, etc.)
 │   ├── data/         # Mock data & copy information
@@ -79,12 +78,14 @@ Navigate to [http://localhost:3001/api/viewer](http://localhost:3001/api/viewer)
 
 ## ☁️ Deployment on Vercel
 
-This repository is optimized for quick, one-click deployments on Vercel without setup overhead.
+This repository is optimized for quick, one-click deployments on Vercel.
 
-1. **Push Changes to GitHub**: Push current commits to your repository branch.
+1. **Push Changes to GitHub**: Commit and push changes to your repository branch.
 2. **Connect to Vercel**: Import the repository in Vercel.
-3. **Build Settings**: Vercel automatically detects the Vite config setup and configures the default static build.
-4. **Deploy**: Completed! The website and API endpoints will be live under a unified domain URL.
+3. **Configure Environment Variables**:
+   In the Vercel project Settings dashboard under **Environment Variables**, add:
+   - **`MONGODB_URI`**: Your MongoDB connection string.
+4. **Deploy**: Completed! The website and API endpoints will be live under a single unified domain URL.
 5. **View Submissions**: Access the online dashboard database by visiting:
    ```txt
    https://<your-vercel-domain>.vercel.app/api/viewer
