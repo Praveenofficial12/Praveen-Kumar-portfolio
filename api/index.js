@@ -12,63 +12,63 @@ app.use(express.json());
 // Ensure Database is initialized before handling any requests
 let dbInitPromise = null;
 app.use(async (req, res, next) => {
-    if (!dbInitPromise) {
-        dbInitPromise = init();
-    }
-    await dbInitPromise;
-    next();
+  if (!dbInitPromise) {
+    dbInitPromise = init();
+  }
+  await dbInitPromise;
+  next();
 });
 
 // ── API Routes ──────────────────────────────────────────────────────────────
 
 // POST /api/contact  → save a new message
-app.post('/api/contact', (req, res) => {
-    const { name, email, subject, message } = req.body;
-    if (!name || !email || !subject || !message) {
-        return res.status(400).json({ error: 'All fields are required.' });
-    }
-    try {
-        const id = addContact(name, email, subject, message);
-        res.json({ success: true, id });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to save message.', details: error.message });
-    }
+app.post('/api/contact', async (req, res) => {
+  const { name, email, subject, message } = req.body;
+  if (!name || !email || !subject || !message) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  try {
+    const id = await addContact(name, email, subject, message);
+    res.json({ success: true, id });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save message.', details: error.message });
+  }
 });
 
 // GET /api/contact   → list all messages as JSON
-app.get('/api/contact', (req, res) => {
-    try {
-        const rows = getContacts();
-        res.json(rows);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve messages.' });
-    }
+app.get('/api/contact', async (req, res) => {
+  try {
+    const rows = await getContacts();
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve messages.' });
+  }
 });
 
 // DELETE /api/contact/:id  → delete a message
-app.delete('/api/contact/:id', (req, res) => {
-    try {
-        deleteContact(req.params.id);
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to delete message.' });
-    }
+app.delete('/api/contact/:id', async (req, res) => {
+  try {
+    await deleteContact(req.params.id);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete message.' });
+  }
 });
 
 // Redirect /api to /api/viewer
 app.get('/api', (req, res) => {
-    res.redirect('/api/viewer');
+  res.redirect('/api/viewer');
 });
 
 // ── Database Viewer UI ────────────────────────────────────────────────────────
-app.get('/api/viewer', (req, res) => {
-    try {
-        const rows = getContacts();
-        const total = getTotalCount();
+app.get('/api/viewer', async (req, res) => {
+  try {
+    const rows = await getContacts();
+    const total = await getTotalCount();
 
-        const rowsHtml = rows.length === 0
-            ? `<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:2rem">No messages yet.</td></tr>`
-            : rows.map(r => `
+    const rowsHtml = rows.length === 0
+      ? `<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:2rem">No messages yet.</td></tr>`
+      : rows.map(r => `
       <tr>
         <td>${r.id}</td>
         <td>${esc(r.name)}</td>
@@ -81,7 +81,7 @@ app.get('/api/viewer', (req, res) => {
         </td>
       </tr>`).join('');
 
-        res.send(`<!DOCTYPE html>
+    res.send(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -147,25 +147,25 @@ app.get('/api/viewer', (req, res) => {
   </script>
 </body>
 </html>`);
-    } catch (error) {
-        res.status(500).send(`An error occurred: ${error.message}`);
-    }
+  } catch (error) {
+    res.status(500).send(`An error occurred: ${error.message}`);
+  }
 });
 
 function esc(s) {
-    return String(s)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // Only start the listener if running locally (not in serverless environment)
 if (!process.env.VERCEL && !process.env.NOW_BUILDER) {
-    init().then(() => {
-        app.listen(PORT, () => {
-            console.log(`\n  ✅  Backend running locally  →  http://localhost:${PORT}`);
-            console.log(`  📊  Database Viewer         →  http://localhost:${PORT}/api/viewer`);
-        });
+  init().then(() => {
+    app.listen(PORT, () => {
+      console.log(`\n  ✅  Backend running locally  →  http://localhost:${PORT}`);
+      console.log(`  📊  Database Viewer         →  http://localhost:${PORT}/api/viewer`);
     });
+  });
 }
 
 export default app;
