@@ -24,11 +24,21 @@ export default function App() {
 
   const handleLoadingComplete = () => setLoading(false);
 
+  useEffect(() => {
+    if (!loading) {
+      fetch('/api/analytics/pageview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageVisited: window.location.pathname || '/', referrer: document.referrer || 'Direct' })
+      }).catch(() => { });
+    }
+  }, [loading]);
+
   return (
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-[#060712]">
       <AnimatePresence mode="wait">
         {loading ? (
-          <motion.div key="loading" exit={{ opacity: 0, scale: 1.05 }} transition={{ duration: 0.4 }}>
+          <motion.div key="loading" exit={{ opacity: 0, scale: 1.02 }} transition={{ duration: 0.35 }}>
             <LoadingScreen onComplete={handleLoadingComplete} />
           </motion.div>
         ) : (

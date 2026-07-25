@@ -62,7 +62,13 @@ export default function Hero() {
 
                     {/* CTA Buttons */}
                     <motion.div variants={itemVariants} className="flex flex-wrap gap-3 justify-center lg:justify-start mb-8">
-                        <a href="/resume.pdf" download="Praveen Kumar K - Resume.pdf" className="btn-primary flex items-center gap-2">
+                        <a href="/resume.pdf" download="Praveen Kumar K - Resume.pdf" onClick={() => {
+                            fetch('/api/analytics/resume-download', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'download' })
+                            }).catch(() => { });
+                        }} className="btn-primary flex items-center gap-2">
                             <Download size={16} />
                             Download Resume
                         </a>

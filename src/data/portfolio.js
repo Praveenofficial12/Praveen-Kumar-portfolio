@@ -24,7 +24,7 @@ export const education = [
     },
     {
         degree: "Higher Secondary Certificate",
-        field: "Science",
+        field: "Computer Science",
         institution: "Cheran Matric Hr. Sec. School",
         location: "Punnam Chathiram",
         period: "2022 – 2023",
@@ -36,7 +36,7 @@ export const education = [
 export const skills = [
     {
         category: "Languages",
-        icon: "Languages", // We will map these in UI component
+        icon: "Languages",
         color: "from-violet-500 to-purple-600",
         items: ["Java", "Python"],
     },
@@ -50,7 +50,7 @@ export const skills = [
         category: "Databases",
         icon: "Databases",
         color: "from-pink-500 to-rose-600",
-        items: ["MySQL", "MongoDB"],
+        items: ["MongoDB", "MySQL"],
     },
     {
         category: "Graphic Design",
@@ -72,7 +72,7 @@ export const projects = [
         title: "AI Powered Heart Disease Risk Predictor",
         category: "AI / ML",
         description: "An AI-driven healthcare web application that predicts heart disease risk using patient health parameters such as blood pressure, cholesterol, heart rate, and age through machine learning models.",
-        tech: ["Python", "Flask", "Machine Learning", "MySQL", "HTML", "CSS"],
+        tech: ["Python", "Flask", "Machine Learning", "MongoDB", "HTML", "CSS"],
         features: [
             "Heart disease prediction using ML",
             "Patient dashboard with analytics",
@@ -81,17 +81,17 @@ export const projects = [
         ],
         github: "https://github.com/Praveenofficial12/Ai-Heart-Disease-Risk-Predictor",
         demo: "#",
-        image: "/heart_predictor.png",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
         color: "from-purple-600 to-pink-600",
         bgColor: "rgba(124, 58, 237, 0.08)",
-        tags: ["AI/ML", "Healthcare", "Flask"],
+        tags: ["AI/ML", "Healthcare", "Flask", "MongoDB"],
     },
     {
         id: 2,
         title: "AgriSense AI",
         category: "Software Platform",
         description: "An AI-powered AgriTech platform that monitors crop health and soil conditions, providing real-time analysis of moisture, humidity, pH, and NPK levels through an interactive software dashboard.",
-        tech: ["Python", "Machine Learning", "React.js", "MySQL", "Tailwind CSS"],
+        tech: ["Python", "Machine Learning", "React.js", "MongoDB", "Tailwind CSS"],
         features: [
             "Real-time crop & soil monitoring simulation",
             "Interactive software dashboard",
@@ -100,22 +100,14 @@ export const projects = [
         ],
         github: "https://github.com/Praveenofficial12/Agrisense_ai/tree/main/agrisense-ai",
         demo: "#",
-        image: "/agrisense.png",
+        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1200&auto=format&fit=crop",
         color: "from-emerald-600 to-teal-600",
         bgColor: "rgba(16, 185, 129, 0.08)",
-        tags: ["Software", "AgriTech", "React"],
+        tags: ["Software", "AgriTech", "React", "MongoDB"],
     },
 ];
 
 export const certifications = [
-    {
-        title: "Infosys Springboard Internship",
-        issuer: "Infosys Springboard",
-        icon: "💼",
-        logo: "/infosys.svg",
-        color: "from-indigo-500 to-blue-600",
-        year: "Nov 4, 2025 – Jan 10, 2026",
-    },
     {
         title: "Oracle Cloud Infrastructure 2025 Certified Generative AI Professional",
         issuer: "Oracle University",
@@ -123,38 +115,42 @@ export const certifications = [
         logo: "/oracle.svg",
         color: "from-orange-500 to-red-500",
         year: "Oct 6, 2025",
+        certificateImage: "/certificates/oracle-genai.png",
     },
     {
-        title: "Machine Learning Foundation",
+        title: "Machine Learning Foundation Certification",
         issuer: "Infosys Springboard",
         icon: "🧠",
         logo: "/infosys.svg",
         color: "from-violet-500 to-purple-600",
         year: "July 5, 2025",
+        certificateImage: "/certificates/infosys-ml.png",
     },
     {
-        title: "Microsoft Azure SQL",
-        issuer: "Microsoft",
+        title: "Microsoft Azure SQL Course Certificate",
+        issuer: "Microsoft (Coursera)",
         icon: "☁️",
         logo: "/microsoft.svg",
         color: "from-blue-500 to-cyan-500",
         year: "July 6, 2025",
+        certificateImage: "/certificates/azure-sql.png",
     },
 ];
 
 export const internship = {
-    company: "Infosys",
-    logo: "/infosys.svg",
-    role: "Virtual Intern",
-    type: "Virtual Internship",
+    company: "Infosys Springboard",
+    role: "Artificial Intelligence & ML Virtual Intern",
+    type: "Virtual Internship 6.0",
     duration: "Nov 4, 2025 – Jan 10, 2026",
-    description: "Completed Infosys Springboard Virtual Internship 6.0 in Artificial Intelligence, gaining hands-on experience in core AI concepts, machine learning techniques, and real-world problem solving. Successfully developed the project 'AI-Powered Application for Early Detection of Heart Disease Risk' and worked on practical industry-oriented modules.",
+    logo: "/infosys.svg",
+    certificateImage: "/certificates/infosys-internship.png",
+    description: "Completed an intensive virtual internship focusing on Machine Learning model development, exploratory data analysis, algorithm evaluation, and practical deployment practices within the Infosys Springboard ecosystem.",
     skills: [
-        "Artificial Intelligence",
-        "Machine Learning",
-        "Data-Driven Solutions",
-        "Early Disease Risk Detection",
-    ],
+        "Machine Learning Model Building",
+        "Data Preprocessing & Analysis",
+        "Python & Scikit-Learn",
+        "Model Evaluation & Tuning"
+    ]
 };
 
 export const caseStudies = [

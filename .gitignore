@@ -26,3 +26,8 @@ dist-ssr
 # Database
 *.db
 contacts.db
+
+# Environment variables
+.env
+.env*.local
+

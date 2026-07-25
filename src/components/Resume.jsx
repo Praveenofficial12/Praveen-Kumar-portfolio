@@ -1,6 +1,14 @@
 import { motion } from 'framer-motion';
 import { Download, FileText } from 'lucide-react';
 
+const trackResume = (action) => {
+    fetch('/api/analytics/resume-download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+    }).catch(() => { });
+};
+
 export default function Resume() {
     return (
         <section id="resume" className="section bg-mesh">
@@ -46,6 +54,7 @@ export default function Resume() {
                             href="/resume.pdf"
                             download="Praveen Kumar K - Resume.pdf"
                             id="download-resume"
+                            onClick={() => trackResume('download')}
                             className="btn-primary flex items-center gap-2"
                         >
                             <Download size={16} />
@@ -55,6 +64,7 @@ export default function Resume() {
                             href="/resume.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => trackResume('view')}
                             className="btn-outline flex items-center gap-2"
                         >
                             <FileText size={16} />

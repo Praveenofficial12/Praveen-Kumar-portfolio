@@ -1,71 +1,88 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
 
 export default function LoadingScreen({ onComplete }) {
     const [progress, setProgress] = useState(0);
+    const completedRef = useRef(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setProgress(p => {
-                if (p >= 100) {
+            setProgress(prev => {
+                if (prev >= 100) {
                     clearInterval(interval);
-                    setTimeout(onComplete, 200);
+                    if (!completedRef.current) {
+                        completedRef.current = true;
+                        setTimeout(() => {
+                            if (onComplete) onComplete();
+                        }, 250);
+                    }
                     return 100;
                 }
-                return p + 2;
+                return prev + 4;
             });
-        }, 30);
+        }, 35);
+
         return () => clearInterval(interval);
     }, [onComplete]);
 
     return (
-        <motion.div
-            className="loading-screen"
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.5 }}
-        >
-            {/* Orbs */}
-            <div className="orb orb-purple w-64 h-64 top-0 left-0 opacity-50" />
-            <div className="orb orb-pink w-48 h-48 bottom-0 right-0 opacity-30" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#060712] overflow-hidden">
+            {/* Background Orbs */}
+            <div className="orb orb-purple w-96 h-96 -top-20 -left-20 opacity-40 pointer-events-none" />
+            <div className="orb orb-pink w-80 h-80 bottom-0 right-0 opacity-30 pointer-events-none" />
+            <div className="orb orb-cyan w-64 h-64 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col items-center gap-6">
-                {/* Animated logo */}
+            <div className="relative z-10 flex flex-col items-center gap-6 px-4">
+                {/* Logo Badge */}
                 <motion.div
-                    initial={{ scale: 0.5, opacity: 0 }}
+                    initial={{ scale: 0.6, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 0 40px rgba(124,58,237,0.5)' }}
+                    className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-2xl border border-purple-500/30"
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(124,58,237,0.8), rgba(168,85,247,0.8))',
+                        boxShadow: '0 0 50px rgba(168,85,247,0.4)'
+                    }}
                 >
-                    <span className="text-white font-bold font-display text-3xl">PK</span>
+                    <span className="text-white font-extrabold font-display text-3xl tracking-wide">PK</span>
                 </motion.div>
 
+                {/* Name & Title */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
+                    transition={{ delay: 0.2 }}
                     className="text-center"
                 >
-                    <p className="loading-logo">Praveen Kumar K</p>
-                    <p className="text-dark-400 text-sm mt-1">AI & Data Science · Front-End Developer</p>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold font-display gradient-text tracking-tight mb-1">
+                        Praveen Kumar K
+                    </h1>
+                    <p className="text-purple-300 text-sm font-medium">
+                        Front-End Developer · Prompt Engineer · Data Analyst
+                    </p>
                 </motion.div>
 
-                {/* Progress */}
+                {/* Progress Bar & Counter */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="flex flex-col items-center gap-2"
+                    transition={{ delay: 0.3 }}
+                    className="flex flex-col items-center gap-2.5 w-64 mt-2"
                 >
-                    <div className="loading-bar">
-                        <motion.div
-                            className="loading-bar-fill"
-                            style={{ width: `${progress}%` }}
+                    <div className="w-full h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800 p-0.5 shadow-inner">
+                        <div
+                            className="h-full rounded-full transition-all duration-150 ease-out"
+                            style={{
+                                width: `${progress}%`,
+                                background: 'linear-gradient(90deg, #6366f1, #a855f7, #ec4899)'
+                            }}
                         />
                     </div>
-                    <p className="text-dark-500 text-xs font-mono">{progress}% loaded</p>
+                    <span className="text-xs font-mono font-semibold text-slate-400">
+                        {progress}% Initializing...
+                    </span>
                 </motion.div>
             </div>
-        </motion.div>
+        </div>
     );
 }
