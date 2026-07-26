@@ -5,24 +5,20 @@
   <img src="https://img.shields.io/badge/Vite_8-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite 8" />
   <img src="https://img.shields.io/badge/Tailwind_CSS_3-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/MongoDB_Atlas-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB Atlas" />
-  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js" />
   <img src="https://img.shields.io/badge/Vercel_Serverless-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 
   <br /><br />
 
-  <h1>✨ Praveen Kumar K — Developer Portfolio & Full-Stack Platform ✨</h1>
+  <h1>✨ Praveen Kumar K (Developer & UI/UX Designer) ✨</h1>
 
   <p>
-    <b>A high-performance, full-stack personal portfolio and telemetry engine.</b><br />
-    Designed with modern glassmorphism aesthetics, dynamic micro-animations, cloud database persistence, dual-provider email automation, and a real-time admin control panel.
+    <b>A high-performance, modern personal portfolio and interactive web application.</b><br />
+    Designed with glassmorphism aesthetics, dynamic micro-animations, cloud database persistence, and automated email notifications.
   </p>
 
   <p>
     <a href="https://praveen-kumar-portfolio-developer.vercel.app/" target="_blank">
       <img src="https://img.shields.io/badge/🌐_Live_Website-Visit_Portfolio-7c3aed?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Website" />
-    </a>
-    <a href="https://praveen-kumar-portfolio-developer.vercel.app/api/viewer" target="_blank">
-      <img src="https://img.shields.io/badge/⚡_Admin_Dashboard-View_Live_Metrics-ec4899?style=for-the-badge&logo=mongodb&logoColor=white" alt="Admin Dashboard" />
     </a>
   </p>
 
@@ -36,7 +32,6 @@
 - [🏗 System Architecture](#-system-architecture)
 - [🛠 Deep Tech Stack Elaboration](#-deep-tech-stack-elaboration)
 - [🚀 Core Features & Innovations](#-core-features--innovations)
-- [📁 Project Directory Structure](#-project-directory-structure)
 - [⚙️ Local Installation & Development](#-local-installation--development)
 - [☁️ Environment Variables & Vercel Deployment](#️-environment-variables--vercel-deployment)
 - [📄 License & Contact](#-license--contact)
@@ -45,18 +40,17 @@
 
 ## ✨ Overview
 
-This repository powers **Praveen Kumar K's** official developer portfolio. Beyond a standard showcase website, this project incorporates a **production-ready serverless backend infrastructure** capable of:
+This repository powers **Praveen Kumar K's** official portfolio. Designed as a modern UI/UX showcase, this application incorporates a serverless cloud infrastructure capable of:
 
-- 📬 **Receiving & Persisting Messages**: Seamless contact form capture stored in MongoDB Atlas with client browser IP/device telemetry.
-- ⚡ **Dual Email Delivery Engine**: Guaranteed delivery utilizing **Resend API** as the primary handler and **Nodemailer (Gmail SMTP)** as an automatic fallback.
-- 📊 **Real-Time Site Analytics**: Tracking total site visits, resume downloads, certification view metrics, and project interactions.
-- 🛡 **Embedded Admin Dashboard**: A sleek, web-based management suite (`/api/viewer`) equipped with desktop notification alerts and audio chimes for real-time lead updates.
+- 📬 **Receiving & Persisting Messages**: Contact form capture stored securely in MongoDB Atlas with client device details.
+- ⚡ **Dual Email Delivery Engine**: Guaranteed notification delivery utilizing **Resend API** as the primary handler and **Nodemailer (Gmail SMTP)** as an automatic fallback.
+- 📊 **Site Analytics & Metrics**: Tracking total site visits, resume downloads, certificate views, and project interactions.
 
 ---
 
 ## 🏗 System Architecture
 
-The application uses a **unified single-domain architecture** on Vercel. Vite handles client-side UI rendering while Express handles serverless API routes under `/api/*`.
+The application uses a **unified single-domain architecture** on Vercel. Vite handles client-side UI rendering while serverless API routes handle data storage and email delivery under `/api/*`.
 
 ```mermaid
 flowchart TD
@@ -68,7 +62,7 @@ flowchart TD
 
     subgraph Vercel ["⚡ Vercel Cloud Platform"]
         Rewrites["Single Domain Router (vercel.json)"]
-        API["Express Serverless Handler (api/index.js)"]
+        API["Serverless Function Handler (api/index.js)"]
     end
 
     subgraph Database ["🍃 Cloud Storage"]
@@ -80,9 +74,8 @@ flowchart TD
         SMTP["Nodemailer Gmail SMTP (Fallback)"]
     end
 
-    subgraph Admin ["⚡ Admin Suite"]
-        Viewer["Admin Dashboard (/api/viewer)"]
-        Owner["Praveen's Inbox"]
+    subgraph Owner ["📬 Owner Alert"]
+        Inbox["Praveen's Inbox"]
     end
 
     UI --> Rewrites
@@ -90,14 +83,11 @@ flowchart TD
     Analytics -->|POST /api/analytics| Rewrites
     Rewrites --> API
 
-    API -->|Save Message / Logs| Atlas
+    API -->|Save Message / Telemetry| Atlas
     API -->|1. Try Resend| Resend
     Resend -->|Failed? Fallback| SMTP
-    Resend -->|Send Alert| Owner
-    SMTP -->|Send Alert| Owner
-
-    Atlas -->|Fetch Analytics & Messages| Viewer
-    Viewer -->|Manage & Star Messages| API
+    Resend -->|Send Alert| Inbox
+    SMTP -->|Send Alert| Inbox
 ```
 
 ---
@@ -105,23 +95,23 @@ flowchart TD
 ## 🛠 Deep Tech Stack Elaboration
 
 ### 🎨 1. Frontend Layer
-- **React 19 & Vite 8**: Built on the latest React architecture and Vite fast-build server for instant HMR and optimized production bundles (~125 kB gzip).
-- **Tailwind CSS & PostCSS**: Custom utility-first styling with curated dark gradients, glassmorphism filters (`backdrop-blur`), neural grid patterns, and responsive breakpoints.
-- **Framer Motion**: Delivers smooth scroll-triggered component entrances, card hover depth effects, modal popups, and tab transitions.
-- **Lucide Icons & React Icons**: Modern vector icon libraries providing consistent visual iconography across all UI sections.
+- **React 19 & Vite 8**: Built on the latest React architecture and Vite build tool for instant HMR and optimized production bundles.
+- **Tailwind CSS & PostCSS**: Custom utility-first styling featuring dark gradients, glassmorphism filters (`backdrop-blur`), grid patterns, and responsive layouts.
+- **Framer Motion**: Smooth scroll-triggered component entrances, interactive card hover effects, modal popups, and tab transitions.
+- **Lucide Icons & React Icons**: Modern vector icon libraries providing crisp visual icons across all sections.
 
 ### ⚡ 2. Backend & Serverless API
-- **Node.js & Express.js**: Lightweight RESTful routing engine wrapped inside a Vercel Serverless function (`api/index.js`).
+- **Node.js & Vercel Serverless**: Lightweight API routing wrapped inside Vercel Serverless Functions (`api/index.js`).
 - **Unified Domain Rewrite (`vercel.json`)**: Eliminates CORS complications by proxying all `/api/*` network requests seamlessly through the main web domain.
 - **Modular Route Structure**: Clean separation between database schemas (`api/models/`), email services (`api/services/mailer.js`), and database handlers (`api/services/database.js`).
 
 ### 🍃 3. Database & Cloud Persistence
-- **MongoDB Atlas**: Cloud-hosted NoSQL database storing messages, visitor telemetry, resume downloads, and certificate interactions.
+- **MongoDB Atlas**: Cloud-hosted NoSQL database storing contact messages, visitor telemetry, resume downloads, and certificate interactions.
 - **Mongoose ODM**: Strongly typed schema modeling with index optimization and automated timestamping (`createdAt`).
 
 ### 📧 4. Automated Email Delivery System
-- **Resend API**: Lightning-fast transactional email API used as the primary notification provider.
-- **Nodemailer (Gmail SMTP)**: High-reliability secondary failover system utilizing 16-character Gmail App Authentication.
+- **Resend API**: Fast transactional email API used as the primary notification provider.
+- **Nodemailer (Gmail SMTP)**: Reliable secondary failover system utilizing Gmail App Passwords.
 - **HTML Email Templates**: Custom dark-themed responsive HTML templates sent to both the portfolio owner (instant alert) and the visitor (confirmation auto-reply).
 
 ---
@@ -132,44 +122,8 @@ flowchart TD
 | :--- | :--- |
 | **🎨 Cyber-Dark Aesthetic** | Modern dark UI featuring neon glowing accents, glassmorphic cards, and custom typography. |
 | **📁 Interactive Resume & Certs** | Downloadable PDF resume served via `public/resume.pdf` + interactive certificate preview modals. |
-| **⚡ Admin Control Panel** | Full-featured control panel at `/api/viewer` to review messages, mark read/unread, star leads, and track analytics. |
-| **🔔 Live Audio & Web Alerts** | Sound chimes & browser notifications when a new contact message arrives on the admin dashboard. |
 | **🛡 Rate-Limiting & Security** | Sanitized inputs to prevent XSS attacks and input abuse across all contact API endpoints. |
 | **📊 Real-Time Telemetry** | Captures browser details, device type, referrer origin, and interaction timestamps. |
-
----
-
-## 📁 Project Directory Structure
-
-```
-Portfolio/
-├── api/                   # Serverless Express API & Services
-│   ├── models/            # Mongoose Schemas (ContactMessages, PortfolioAnalytics, etc.)
-│   ├── routes/            # Modular API Endpoints (contact.js, analytics.js)
-│   ├── services/          # Mailer (Resend/Nodemailer) & Database Services
-│   └── index.js           # Serverless Express App Entrypoint & Dashboard
-├── public/                # Static public assets
-│   ├── certificates/      # Certification badges & credential images
-│   ├── favicon.svg        # Custom Favicon
-│   ├── praveen.jpg        # Profile Photo
-│   └── resume.pdf         # Resume PDF for site visitors
-├── scripts/               # Helper & utility scripts
-│   └── test-email.mjs     # Live email diagnostics script
-├── src/                   # React Frontend Application
-│   ├── components/        # React UI components (Hero, Navbar, Projects, Skills, etc.)
-│   ├── data/              # Portfolio Data Configuration (portfolio.js)
-│   ├── App.jsx            # Core Application Shell
-│   ├── index.css          # Design Tokens & Custom CSS Utilities
-│   └── main.jsx           # React DOM Root Mount
-├── .env                   # Local environment variables (git-ignored)
-├── .env.example           # Reference template for environment variables
-├── .gitignore             # Git ignore configuration
-├── index.html             # Entry HTML template
-├── package.json           # Project manifest and scripts
-├── README.md              # Documentation
-├── vercel.json            # Vercel deployment routes config
-└── vite.config.js         # Vite build tool configuration
-```
 
 ---
 
@@ -205,14 +159,13 @@ PORT=3001
 ```
 
 ### 3. Run Dev Server
-Launch both the Vite frontend and the Express backend simultaneously:
+Launch the development environment:
 ```bash
 npm run dev
 ```
 
 - **Frontend**: [http://localhost:5173](http://localhost:5173)
 - **Backend API**: [http://localhost:3001](http://localhost:3001)
-- **Admin Dashboard**: [http://localhost:3001/api/viewer](http://localhost:3001/api/viewer)
 
 ### 4. Test Email System
 Verify email delivery diagnostics via script:
@@ -240,13 +193,13 @@ Deploying on Vercel takes less than two minutes:
 | `SMTP_USER` | Gmail sender address | `praveenkumark1204@gmail.com` |
 | `SMTP_PASS` | Gmail App Password | `16_character_app_pass` |
 
-4. Click **Deploy**. Vercel will automatically build the React client and host the serverless Express endpoints!
+4. Click **Deploy**. Vercel will automatically build the React client and host the serverless endpoints!
 
 ---
 
 ## 📄 License & Contact
 
-Developed with ❤️ by **Praveen Kumar K**
+Developed with ❤️ by **Praveen Kumar K** (Developer & UI/UX Designer)
 
 - **Email**: [praveenkumark1204@gmail.com](mailto:praveenkumark1204@gmail.com)
 - **GitHub**: [@Praveenofficial12](https://github.com/Praveenofficial12)
