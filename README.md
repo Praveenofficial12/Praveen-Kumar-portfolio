@@ -24,6 +24,12 @@
 
 </div>
 
+
+## 📌 About
+
+A modern personal portfolio showcasing my projects, technical skills, UI/UX work, resume, certifications, and contact information.
+
+
 ---
 
 ## 📖 Table of Contents
