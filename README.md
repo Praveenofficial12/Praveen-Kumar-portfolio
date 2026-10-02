@@ -25,25 +25,6 @@
 </div>
 
 
-## 📌 About
-
-A modern personal portfolio showcasing my projects, technical skills, UI/UX work, resume, certifications, and contact information.
-
-
----
-
-## 📖 Table of Contents
-
-- [✨ Overview](#-overview)
-- [🏗 System Architecture](#-system-architecture)
-- [🛠 Deep Tech Stack Elaboration](#-deep-tech-stack-elaboration)
-- [🚀 Core Features & Innovations](#-core-features--innovations)
-- [⚙️ Local Installation & Development](#-local-installation--development)
-- [☁️ Environment Variables & Vercel Deployment](#️-environment-variables--vercel-deployment)
-- [📄 License & Contact](#-license--contact)
-
----
-
 ## ✨ Overview
 
 This repository powers **Praveen Kumar K's** official portfolio. Designed as a modern UI/UX showcase, this application incorporates a serverless cloud infrastructure capable of:
